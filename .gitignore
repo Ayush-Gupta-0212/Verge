@@ -1,0 +1,48 @@
+# ── deps + build artefacts ────────────────────────────────────────────────
+node_modules
+.next
+out
+*.tsbuildinfo
+next-env.d.ts
+
+# ── env files (every variant; .env.example is the only checked-in one) ────
+.env
+.env.local
+.env*.local
+.env.development
+.env.production
+.env.test
+
+# ── deploy / hosting ──────────────────────────────────────────────────────
+.vercel
+
+# ── logs (dev / prod stdouts from local runs) ─────────────────────────────
+*.log
+.dev.log
+.prod.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── editor / OS ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ── tooling caches ────────────────────────────────────────────────────────
+.eslintcache
+.cache
+coverage
+playwright-report
+test-results
+
+# ── Sentry source maps (uploaded, not stored) ─────────────────────────────
+.sentryclirc
+sentry.properties
+.claude/

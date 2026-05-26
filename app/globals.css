@@ -1,0 +1,357 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0807;
+  --bg-deep: #050403;
+  --ink: #f0ebe4;
+  --ink-mute: rgba(240, 235, 228, 0.62);
+  --ink-faint: rgba(240, 235, 228, 0.38);
+
+  /* Accent — three Tailwind tokens (amber / amber-soft / amber-deep) plus
+     RGB triplets so we can compose colors with dynamic alpha in CSS
+     without re-declaring per accent. Default = "amber" (the original). */
+  --accent-rgb:      255 138 61;
+  --accent-soft-rgb: 255 165 100;
+  --accent-deep-rgb: 255 122 24;
+  --amber: rgb(var(--accent-rgb));
+  --amber-soft: rgb(var(--accent-soft-rgb));
+  --amber-deep: rgb(var(--accent-deep-rgb));
+
+  --lunar: #b8d4e3;
+  --line: rgb(var(--accent-rgb) / 0.10);
+  --line-strong: rgb(var(--accent-rgb) / 0.22);
+  --card: rgba(20, 16, 14, 0.55);
+  --card-edge: rgb(var(--accent-rgb) / 0.10);
+  color-scheme: dark;
+}
+
+/* Accent variants — swap the RGB triplets on <html data-accent="…">. Every
+   place that resolves through --accent-rgb (most Tailwind `amber` classes,
+   the page-level grid + ground glow, .card edges) shifts automatically. */
+[data-accent='violet'] {
+  --accent-rgb:      183 122 255;
+  --accent-soft-rgb: 205 158 255;
+  --accent-deep-rgb: 138 80 230;
+}
+[data-accent='aurora'] {
+  --accent-rgb:      90 230 180;
+  --accent-soft-rgb: 140 248 200;
+  --accent-deep-rgb: 50 200 150;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #__next {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Background grid — tiny "+" plus marks on a dark field, plus a faint warm
+   ground glow at the bottom that gives the space depth. Applied to <body>. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 138, 61, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 138, 61, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px;
+  mask-image: radial-gradient(circle at 50% 50%, black, transparent 95%);
+  z-index: 1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  left: 0; right: 0; bottom: -40vh;
+  height: 80vh;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 122, 24, 0.18) 0%, transparent 60%);
+  z-index: 1;
+}
+
+.card {
+  /* Fallback background — opaque enough to look right when backdrop-filter
+     is unavailable (Firefox without the layout.css.backdrop-filter pref,
+     low-end mobile GPUs, or browsers that throttle blur). The translucent
+     `--card` only applies inside the @supports block so the cards never
+     disappear into the page when the filter doesn't paint. */
+  background: rgba(20, 16, 14, 0.92);
+  border: 1px solid var(--card-edge);
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 60px -28px rgba(0, 0, 0, 0.7);
+}
+
+@supports ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+  }
+}
+
+.card-hover {
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+.card-hover:hover {
+  border-color: rgba(255, 138, 61, 0.22);
+  transform: translateY(-1px);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+.eyebrow-amber {
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--amber);
+}
+
+.amber-glow {
+  color: var(--amber);
+  text-shadow:
+    0 0 18px rgba(255, 138, 61, 0.45),
+    0 0 4px rgba(255, 138, 61, 0.55);
+}
+
+.btn-amber {
+  background: var(--amber);
+  color: #1a0d04;
+  border-radius: 12px;
+  padding: 0.9rem 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  transition: background 180ms ease, box-shadow 180ms ease;
+  cursor: pointer;
+  border: none;
+}
+.btn-amber:hover {
+  background: var(--amber-soft);
+  box-shadow: 0 0 30px rgba(255, 138, 61, 0.35);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--card-edge);
+  color: var(--ink-mute);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 180ms ease, border-color 180ms ease;
+  cursor: pointer;
+}
+.btn-ghost:hover {
+  color: var(--ink);
+  border-color: rgba(255, 138, 61, 0.30);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--line-strong);
+  color: var(--amber);
+  background: rgba(255, 138, 61, 0.06);
+}
+
+::selection {
+  background: rgba(255, 138, 61, 0.32);
+  color: #1a0d04;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* Accessibility — visible focus ring for keyboard users only.
+   Mouse clicks don't trigger :focus-visible, so the styling stays subtle. */
+:where(button, a, input, textarea, select, [role="button"], [role="menuitem"]):focus-visible {
+  outline: 2px solid rgba(255, 138, 61, 0.55);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Focus overlay — full-screen stage that captures clicks but keeps the
+   canvas (with the dark sphere) visible behind. The amber ground glow lives
+   on a pseudo-element so it can slowly breathe without disturbing the stage
+   itself. `body::before` (grid) and `body::after` (base glow) keep painting. */
+.focus-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: auto;
+  isolation: isolate;
+}
+
+.focus-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 115%, rgba(255, 122, 24, 0.42) 0%, transparent 55%);
+  animation: focus-glow 12s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* Soothing animations */
+@keyframes focus-glow {
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.06); }
+}
+
+@keyframes breath-line {
+  0%, 100% { transform: scaleX(0.30); opacity: 0.35; }
+  50%      { transform: scaleX(1);    opacity: 0.85; }
+}
+
+@keyframes timer-pulse {
+  0%, 100% { opacity: 0.92; }
+  50%      { opacity: 1; }
+}
+
+.breathe-line { animation: breath-line 8s ease-in-out infinite; transform-origin: center; }
+.timer-pulse  { animation: timer-pulse  8s ease-in-out infinite; }
+
+/* Spark burst — six tiny amber dots radiating out + fading. Used as a
+   lightweight reward animation on task completion (fired via DOM, not
+   React, so we don't have to thread state through the component tree). */
+@keyframes spark-out {
+  0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translate(var(--sx, 14px), var(--sy, 0px)) scale(0.2); opacity: 0; }
+}
+.spark-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  margin-top:  -2px;
+  border-radius: 999px;
+  background: var(--amber);
+  box-shadow: 0 0 6px rgba(255, 138, 61, 0.85);
+  pointer-events: none;
+  animation: spark-out 600ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-stage::before,
+  .breathe-line,
+  .timer-pulse { animation: none; }
+  .spark-dot   { animation: none; opacity: 0; }
+}
+
+/* In-app reduced-motion override — applies the same animation damping as
+   the OS-level media query when the user toggles it in Astral. Driven by
+   <html data-reduced-motion="true">. */
+[data-reduced-motion='true'] .focus-stage::before,
+[data-reduced-motion='true'] .breathe-line,
+[data-reduced-motion='true'] .timer-pulse,
+[data-reduced-motion='true'] .animate-breathe,
+[data-reduced-motion='true'] .animate-pulse-soft,
+[data-reduced-motion='true'] .animate-fade-in { animation: none !important; }
+[data-reduced-motion='true'] .spark-dot { animation: none !important; opacity: 0; }
+
+/* ── Legal pages (/privacy, /terms) ──────────────────────────────────────
+   Tucked outside the HUD shell so they read like documents, not like an
+   app screen. Same dark palette + amber accents as the rest of Verge. */
+.legal-page {
+  min-height: 100vh;
+  padding: 56px 24px 96px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), sans-serif;
+  line-height: 1.65;
+}
+.legal-page > article {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.legal-page header { margin-bottom: 48px; }
+.legal-page .back-link {
+  display: inline-block;
+  margin-bottom: 32px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--accent-rgb));
+  text-decoration: none;
+}
+.legal-page .back-link:hover { color: rgb(var(--accent-soft-rgb)); }
+.legal-page h1 {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+.legal-page .updated {
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.legal-page section { margin-top: 40px; }
+.legal-page h2 {
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--accent-rgb));
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+.legal-page p { color: var(--ink-mute); margin: 0 0 14px; font-size: 15px; }
+.legal-page ul {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  list-style: disc;
+}
+.legal-page li { color: var(--ink-mute); font-size: 15px; margin-bottom: 8px; }
+.legal-page strong { color: var(--ink); font-weight: 600; }
+.legal-page a {
+  color: rgb(var(--accent-rgb));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-page a:hover { color: rgb(var(--accent-soft-rgb)); }
+.legal-page code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  background: rgb(var(--accent-rgb) / 0.10);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: rgb(var(--accent-soft-rgb));
+}
