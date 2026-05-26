@@ -29,6 +29,9 @@ export async function middleware(request: NextRequest) {
     // Legal pages — always readable, no auth required.
     path === '/privacy' ||
     path === '/terms' ||
+    // Account-deletion instructions — required public URL for Play Store +
+    // similar app-store policies. Must reach without a session.
+    path === '/account-deletion' ||
     // Password reset callback — the user lands here from an email link with
     // a token that Supabase converts into a temporary session client-side.
     // Middleware must not redirect them away before that runs.

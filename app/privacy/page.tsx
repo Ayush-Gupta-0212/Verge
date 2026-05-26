@@ -98,7 +98,8 @@ export default function PrivacyPage() {
             <li>
               <strong>Delete.</strong> Same screen → "Delete account". We scrub
               every row you own and remove your authentication credentials.
-              This is permanent.
+              This is permanent. Full instructions at{' '}
+              <Link href="/account-deletion">/account-deletion</Link>.
             </li>
             <li>
               <strong>Public profile.</strong> Off by default. If you opt in,
